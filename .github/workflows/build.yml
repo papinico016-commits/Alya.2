@@ -17,7 +17,13 @@ jobs:
       - run: |
           if [ -f update.zip ]; then
             rm -f app/src/main/java/com/mochi/pet/PetService.kt
+            rm -f app/src/main/java/com/mochi/pet/Petservice.kt
             unzip -o update.zip
+          fi
+      - run: |
+          M=app/src/main/AndroidManifest.xml
+          if [ -f $M ] && ! grep -q QUERY_ALL_PACKAGES $M; then
+            sed -i '0,/<application/s//<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"\/>\n    <application/' $M
           fi
       - run: pip install pillow numpy
       - run: python3 tools/sprite.py
